@@ -10,7 +10,6 @@ A simple yet powerful **Income Expense Calculator** that helps you track your fi
 - 🔍 **Filter** by "All", "Income", or "Expense"
 - 📊 **Real-time Summary**: View total income, expenses, and net balance
 - 💾 **Local Storage** support for persistent data
-- 🎨 **Modern UI** with dark/light contrast
 
 ## 🛠 Tech Stack
 - **HTML**
@@ -18,16 +17,13 @@ A simple yet powerful **Income Expense Calculator** that helps you track your fi
 - **JavaScript** 
 
 ## 📷 Screenshot
-![App Screenshot]()
+![App Screenshot](./src/screen_shot.png)
 
 ## 📦 Installation & Usage
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/income-expense-calculator.git
+   git clone 
    ```
-2. Open `index.html` in a browser.
 
-## 📜 License
-This project is open-source and available under the **MIT License**.
 
-💡 *Track your money, take control. Simple. Powerful. Effective.*
+
