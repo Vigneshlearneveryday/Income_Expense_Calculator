@@ -22,7 +22,7 @@ A simple yet powerful **Income Expense Calculator** that helps you track your fi
 ## 📦 Installation & Usage
 1. Clone the repository:
    ```sh
-   git clone 
+   git clone https://github.com/Vigneshlearneveryday/Income_Expense_Calculator.git
    ```
 
 
