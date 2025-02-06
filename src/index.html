@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Expense Calculator</title>
+    <link rel="icon" type="image/png" href="favicon (4).png">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+    <div class="max-w-2xl w-full bg-gray-800 p-8 rounded-lg shadow-lg">
+        <h2 class="text-3xl font-bold text-center mb-6 text-gray-200">💰 Income Expense Calculator</h2>
+        
+        <div class="mb-6">
+            <input type="hidden" id="editId">
+            <input type="text" id="description" placeholder="✏️ Description" class="w-full p-3 border border-gray-700 bg-gray-700 text-white rounded mb-3">
+            <input type="number" id="amount" placeholder="💲 Amount" class="w-full p-3 border border-gray-700 bg-gray-700 text-white rounded mb-3">
+            <select id="type" class="w-full p-3 border border-gray-700 bg-gray-700 text-white rounded mb-3">
+                <option value="income">📈 Income</option>
+                <option value="expense">📉 Expense</option>
+            </select>
+            <button id="addButton" onclick="addOrUpdateEntry()" class="w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded">➕ Add Entry</button>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-300">📊 Summary</h3>
+            <p>💰 Total Income: <span id="totalIncome" class="font-semibold text-green-400">0</span></p>
+            <p>💸 Total Expenses: <span id="totalExpense" class="font-semibold text-red-400">0</span></p>
+            <p>🔢 Net Balance: <span id="netBalance" class="font-semibold text-gray-100">0</span></p>
+        </div>
+
+        <div class="mb-6">
+            <label class="mr-4"><input type="radio" name="filter" value="all" checked onclick="filterEntries()"> 🔍 All</label>
+            <label class="mr-4"><input type="radio" name="filter" value="income" onclick="filterEntries()"> 📈 Income</label>
+            <label><input type="radio" name="filter" value="expense" onclick="filterEntries()"> 📉 Expense</label>
+        </div>
+        
+        <ul id="entriesList" class="border border-gray-700 rounded p-3 bg-gray-700"></ul>
+    </div>
+
+    <script>
+        let entries = JSON.parse(localStorage.getItem('entries')) || [];
+        renderEntries();
+
+        function addOrUpdateEntry() {
+            const description = document.getElementById('description').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const type = document.getElementById('type').value;
+            const editId = document.getElementById('editId').value;
+
+            if (!description || isNaN(amount)) return alert("⚠️ Please enter valid details.");
+
+            if (editId) {
+                const index = entries.findIndex(entry => entry.id == editId);
+                if (index !== -1) {
+                    entries[index] = { id: editId, description, amount, type };
+                }
+                document.getElementById('addButton').textContent = '➕ Add Entry';
+            } else {
+                entries.push({ id: Date.now(), description, amount, type });
+            }
+
+            localStorage.setItem('entries', JSON.stringify(entries));
+            resetForm();
+            renderEntries();
+        }
+
+        function renderEntries() {
+            const list = document.getElementById('entriesList');
+            list.innerHTML = '';
+            const filter = document.querySelector('input[name="filter"]:checked').value;
+
+            let totalIncome = 0, totalExpense = 0;
+            entries.forEach(entry => {
+                if (filter !== 'all' && entry.type !== filter) return;
+
+                const li = document.createElement('li');
+                li.className = 'p-3 border-b border-gray-600 flex justify-between items-center';
+                li.innerHTML = `${entry.description} - 💲${entry.amount} (${entry.type === 'income' ? '📈' : '📉'})
+                    <div>
+                        <button onclick="editEntry(${entry.id})" class="text-blue-400 hover:text-blue-500">✏️ Edit</button>
+                        <button onclick="deleteEntry(${entry.id})" class="text-red-400 hover:text-red-500 ml-2">❌ Delete</button>
+                    </div>`;
+                list.appendChild(li);
+
+                if (entry.type === 'income') totalIncome += entry.amount;
+                else totalExpense += entry.amount;
+            });
+
+            document.getElementById('totalIncome').textContent = totalIncome;
+            document.getElementById('totalExpense').textContent = totalExpense;
+            document.getElementById('netBalance').textContent = totalIncome - totalExpense;
+        }
+
+        function editEntry(id) {
+            const entry = entries.find(e => e.id === id);
+            if (!entry) return;
+            document.getElementById('editId').value = entry.id;
+            document.getElementById('description').value = entry.description;
+            document.getElementById('amount').value = entry.amount;
+            document.getElementById('type').value = entry.type;
+            document.getElementById('addButton').textContent = '✏️ Update Entry';
+        }
+
+        function deleteEntry(id) {
+            entries = entries.filter(e => e.id !== id);
+            localStorage.setItem('entries', JSON.stringify(entries));
+            renderEntries();
+        }
+
+        function resetForm() {
+            document.getElementById('editId').value = '';
+            document.getElementById('description').value = '';
+            document.getElementById('amount').value = '';
+            document.getElementById('type').value = 'income';
+            document.getElementById('addButton').textContent = '➕ Add Entry';
+        }
+
+        function filterEntries() {
+            renderEntries();
+        }
+    </script>
+</body>
+</html>
